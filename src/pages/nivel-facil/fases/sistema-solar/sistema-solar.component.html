@@ -1,0 +1,34 @@
+<div id="game-container">
+  <div id="personagem"></div>
+  <div id="vida">
+    <img src="../../../../assets/img/fases/facil/sistema-solar/coracao.png" class="coracao" id="co1">
+    <img src="../../../../assets/img/fases/facil/sistema-solar/coracao.png" class="coracao" id="co2">
+    <img src="../../../../assets/img/fases/facil/sistema-solar/coracao.png" class="coracao" id="co3">
+    <img src="../../../../assets/img/fases/facil/sistema-solar/coracao.png" class="coracao" id="co4">
+    <img src="../../../../assets/img/fases/facil/sistema-solar/coracao.png" class="coracao" id="co5">
+  </div>
+  <div id="planetas-coletados"></div>
+  <div id="popup-vitoria" class="popup hidden">
+    <div class="popup-content">
+      <span id="texto-popup-vitoria"></span>
+      <button id="botao-popup-vitoria">AVANÇAR</button>
+    </div>
+  </div>
+  <div id="popup-derrota" class="popup hidden">
+    <div class="popup-content">
+      <span id="texto-popup-derrota"></span>
+      <div class="botoes-popup-derrota">
+        <button id="botao-tentar-novamente">TENTAR NOVAMENTE</button>
+        <button id="botao-sair">SAIR</button>
+      </div>
+    </div>
+  </div>
+  <div id="popup-inicio" class="popup hidden">
+    <div class="popup-content">
+      <span id="texto-popup-inicio">Bem-vindo ao jogo Sistema Solar!</span>
+      <div class="botoes-popup-inicio">
+        <button id="botao-tentar-novamente" (click)="iniciarJogo()">INICIAR</button>
+      </div>
+    </div>
+  </div>
+</div>
