@@ -1,22 +1,16 @@
 import { Component, ElementRef, Inject, PLATFORM_ID, AfterViewInit, Renderer2, HostListener } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-// import { BlinkService } from '../../../../service/blink-events';
-import { NgZone } from '@angular/core';
-import axios, { AxiosResponse } from 'axios';
-import { HttpClient } from '@angular/common/http';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { ApiService} from '../../../../service/blink-events';
+import { ActivatedRoute} from '@angular/router';
+import { ApiService } from '../../../../service/blink-events';
 
 @Component({
-  selector: 'app-sistema-solar',
+  selector: 'app-sistema-solar',  
   standalone: true,
   imports: [],
   templateUrl: './sistema-solar.component.html',
   styleUrl: './sistema-solar.component.scss'
 })
-
 export class SistemaSolarComponent implements AfterViewInit {
-
   personagem: HTMLElement | null = null;
   gameContainer: HTMLElement | null = null;
   coracoes: HTMLElement[] = [];
@@ -24,14 +18,11 @@ export class SistemaSolarComponent implements AfterViewInit {
   planetasColetados: HTMLElement | null = null;
   popupVitoria: HTMLElement | null = null;
   popupDerrota: HTMLElement | null = null;
-  popupInicio: HTMLElement | null = null;
   textoPopupVitoria: HTMLElement | null = null;
   textoPopupDerrota: HTMLElement | null = null;
   botaoPopupVitoria: HTMLElement | null = null;
   botaoTentarNovamente: HTMLElement | null = null;
   botaoSair: HTMLElement | null = null;
-  gameStarted: boolean = false;
-  acao: boolean = false;
 
   ordemPlanetas: string[] = ["Mercúrio", "Vênus", "Terra", "Marte", "Júpiter", "Saturno", "Urano", "Netuno"];
   imagensPlanetas: { [key: string]: string } = {
@@ -46,23 +37,21 @@ export class SistemaSolarComponent implements AfterViewInit {
   };
   imagemMeteoro: string = "../../../../assets/img/fases/facil/sistema-solar/meteoro.png";
   indicePlanetaAtual: number = 0;
-
+  
   trilhaSonora: HTMLAudioElement | null = null;
   somVitoria: HTMLAudioElement | null = null;
   somDerrota: HTMLAudioElement | null = null;
 
   blinkData: string[] = [];
+  acao: boolean = false;
+
 
   constructor(
     private renderer: Renderer2,
     private elementRef: ElementRef,
     @Inject(PLATFORM_ID) private platformId: Object,
-    private ngZone: NgZone,
-    private http: HttpClient,
-    private router: Router,
     private route: ActivatedRoute,
     private apiService: ApiService
-    // private blinkService: BlinkService
   ) { }
 
   ngAfterViewInit(): void {
@@ -73,7 +62,6 @@ export class SistemaSolarComponent implements AfterViewInit {
       this.vidas = this.coracoes.length;
       this.planetasColetados = this.elementRef.nativeElement.querySelector('#planetas-coletados');
       this.popupVitoria = this.elementRef.nativeElement.querySelector('#popup-vitoria');
-      this.popupInicio = this.elementRef.nativeElement.querySelector('#popup-inicio');
       this.popupDerrota = this.elementRef.nativeElement.querySelector('#popup-derrota');
       this.textoPopupVitoria = this.elementRef.nativeElement.querySelector('#texto-popup-vitoria');
       this.textoPopupDerrota = this.elementRef.nativeElement.querySelector('#texto-popup-derrota');
@@ -81,14 +69,19 @@ export class SistemaSolarComponent implements AfterViewInit {
       this.botaoTentarNovamente = this.elementRef.nativeElement.querySelector('#botao-tentar-novamente');
       this.botaoSair = this.elementRef.nativeElement.querySelector('#botao-sair');
 
-      this.botaoPopupVitoria?.addEventListener('click', () => this.hidePopup('#popup-vitoria'));
-      this.botaoTentarNovamente?.addEventListener('click', () => this.hidePopup('#popup-derrota'));
+      this.chamarService(this.route.snapshot.paramMap.get('tipo') ?? '');
+
+      this.botaoPopupVitoria?.addEventListener('click', () => this.hidePopup());
+      this.botaoTentarNovamente?.addEventListener('click', () => this.hidePopup());
       this.botaoSair?.addEventListener('click', () => this.goToHome());
 
       this.trilhaSonora = new Audio('assets/audio/fases/trilha-sonora-fs1.mp3');
       this.somVitoria = new Audio('assets/audio/conquista/vitoria.mp3');
       this.trilhaSonora.loop = true;
-      this.popupInicio?.classList.remove('hidden');
+      this.trilhaSonora?.play();
+
+      setInterval(() => this.criarPlaneta(), 2000);
+      setInterval(() => this.criarMeteoro(), 5000);
     }
   }
 
@@ -118,13 +111,11 @@ export class SistemaSolarComponent implements AfterViewInit {
       }
     });
   }
-  
+
 
 
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
-    if (!this.gameStarted) return;
-
     if (event.key === 'ArrowUp') {
       event.preventDefault();
       this.subir();
@@ -153,21 +144,8 @@ export class SistemaSolarComponent implements AfterViewInit {
     }
   }
 
-  iniciarJogo(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      this.popupInicio?.classList.add('hidden');
-      this.trilhaSonora?.play();
-      this.gameStarted = true;
-
-      this.chamarService(this.route.snapshot.paramMap.get('tipo') ?? '');
-
-      setInterval(() => this.criarPlaneta(), 2000);
-      setInterval(() => this.criarMeteoro(), 5000);
-    }
-  }
-
   criarPlaneta(): void {
-    if (!this.gameStarted || this.indicePlanetaAtual === this.ordemPlanetas.length) {
+    if (this.indicePlanetaAtual === this.ordemPlanetas.length) {
       return;
     }
 
@@ -180,7 +158,7 @@ export class SistemaSolarComponent implements AfterViewInit {
     this.renderer.addClass(planeta, 'planeta');
     this.renderer.setStyle(planeta, 'backgroundImage', `url(${this.imagensPlanetas[nomePlaneta]})`);
     this.renderer.setAttribute(planeta, 'data-name', nomePlaneta);
-    this.renderer.setStyle(planeta, 'bottom', `${500 + Math.random() * 150}px`);
+    this.renderer.setStyle(planeta, 'bottom', `${250 + Math.random() * 150}px`);
     this.renderer.appendChild(this.gameContainer!, planeta);
     this.moverPlaneta(planeta);
   }
@@ -216,7 +194,7 @@ export class SistemaSolarComponent implements AfterViewInit {
           this.regenerarVida();
 
           if (this.indicePlanetaAtual === this.ordemPlanetas.length) {
-            this.showPopup('#popup-vitoria', 'win', 'Parabéns!! Você concluiu sua missão');
+            this.showPopup('win', 'Parabéns!! Você concluiu sua missão');
           }
         } else {
           this.perderVida();
@@ -228,7 +206,6 @@ export class SistemaSolarComponent implements AfterViewInit {
   }
 
   criarMeteoro(): void {
-    if (!this.gameStarted) return;
     let meteoro = this.renderer.createElement('div');
     this.renderer.addClass(meteoro, 'meteoro');
     this.renderer.setStyle(meteoro, 'backgroundImage', `url(${this.imagemMeteoro})`);
@@ -270,7 +247,7 @@ export class SistemaSolarComponent implements AfterViewInit {
       this.coracoes[this.vidas].style.display = 'none';
     }
     if (this.vidas === 0) {
-      this.showPopup('#popup-derrota', 'lose', 'Você falhou na sua missão, tente novamente.');
+      this.showPopup('lose', 'Você falhou na sua missão, tente novamente.');
     }
   }
 
@@ -281,27 +258,22 @@ export class SistemaSolarComponent implements AfterViewInit {
     }
   }
 
-  showPopup(selector: string, status: 'win' | 'lose', message: string): void {
-    const popup = this.elementRef.nativeElement.querySelector(selector);
-    if (popup) {
-      if (status === 'win') {
-        this.textoPopupVitoria!.textContent = message;
-        popup.style.display = 'block';
-        this.somVitoria?.play();
-      } else {
-        this.textoPopupDerrota!.textContent = message;
-        popup.style.display = 'block';
-      }
-      this.trilhaSonora?.pause();
+  showPopup(status: 'win' | 'lose', message: string): void {
+    if (status === 'win') {
+      this.textoPopupVitoria!.textContent = message;
+      this.popupVitoria!.style.display = 'block';
+      this.somVitoria?.play();
+    } else {
+      this.textoPopupDerrota!.textContent = message;
+      this.popupDerrota!.style.display = 'block';
     }
+    this.trilhaSonora?.pause();
   }
 
-  hidePopup(selector: string): void {
-    const popup = this.elementRef.nativeElement.querySelector(selector);
-    if (popup) {
-      popup.style.display = 'none';
-      this.resetGame();
-    }
+  hidePopup(): void {
+    this.popupVitoria!.style.display = 'none';
+    this.popupDerrota!.style.display = 'none';
+    this.resetGame();
   }
 
   goToHome(): void {
@@ -313,8 +285,6 @@ export class SistemaSolarComponent implements AfterViewInit {
     this.coracoes.forEach(coracao => coracao.style.display = 'inline-block');
     this.indicePlanetaAtual = 0;
     this.planetasColetados!.innerHTML = '';
-    this.gameStarted = false;
     this.trilhaSonora?.play();
   }
-
 }
