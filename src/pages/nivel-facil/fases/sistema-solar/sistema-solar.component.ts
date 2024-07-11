@@ -158,7 +158,7 @@ export class SistemaSolarComponent implements AfterViewInit {
     this.renderer.addClass(planeta, 'planeta');
     this.renderer.setStyle(planeta, 'backgroundImage', `url(${this.imagensPlanetas[nomePlaneta]})`);
     this.renderer.setAttribute(planeta, 'data-name', nomePlaneta);
-    this.renderer.setStyle(planeta, 'bottom', `${250 + Math.random() * 150}px`);
+    this.renderer.setStyle(planeta, 'bottom', `${500 + Math.random() * 150}px`);
     this.renderer.appendChild(this.gameContainer!, planeta);
     this.moverPlaneta(planeta);
   }
@@ -281,7 +281,7 @@ export class SistemaSolarComponent implements AfterViewInit {
   }
 
   resetGame(): void {
-    this.vidas = 3;
+    this.vidas = 5;
     this.coracoes.forEach(coracao => coracao.style.display = 'inline-block');
     this.indicePlanetaAtual = 0;
     this.planetasColetados!.innerHTML = '';
