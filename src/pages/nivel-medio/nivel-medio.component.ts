@@ -3,13 +3,13 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-nivel-facil',
+  selector: 'app-nivel-medio',
   standalone: true,
   imports: [],
-  templateUrl: './nivel-facil.component.html',
-  styleUrl: './nivel-facil.component.scss'
+  templateUrl: './nivel-medio.component.html',
+  styleUrl: './nivel-medio.component.scss'
 })
-export class NivelFacilComponent {
+export class NivelMedioComponent {
   
   constructor(private router: Router, private route: ActivatedRoute) {}
 

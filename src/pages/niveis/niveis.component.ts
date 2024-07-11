@@ -14,7 +14,7 @@ export class NiveisComponent {
 
   constructor(private router: Router, private route: ActivatedRoute) {}
 
-  nivelFacil(): void {
-    this.router.navigate(['/nivelFacil', this.route.snapshot.paramMap.get('tipo')]);
+  nivelMedio(): void {
+    this.router.navigate(['/nivelMedio', this.route.snapshot.paramMap.get('tipo')]);
   }
 }
