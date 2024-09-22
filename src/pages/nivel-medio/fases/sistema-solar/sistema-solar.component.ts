@@ -1,6 +1,6 @@
 import { Component, ElementRef, Inject, PLATFORM_ID, AfterViewInit, Renderer2, HostListener } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { ActivatedRoute} from '@angular/router';
+import { ActivatedRoute, Router} from '@angular/router';
 import { ApiService } from '../../../../service/blink-events';
 
 @Component({
@@ -26,16 +26,16 @@ export class SistemaSolarComponent implements AfterViewInit {
 
   ordemPlanetas: string[] = ["Mercúrio", "Vênus", "Terra", "Marte", "Júpiter", "Saturno", "Urano", "Netuno"];
   imagensPlanetas: { [key: string]: string } = {
-    "Mercúrio": "../../../../assets/img/fases/facil/sistema-solar/mercurio.png",
-    "Vênus": "../../../../assets/img/fases/facil/sistema-solar/venus.png",
-    "Terra": "../../../../assets/img/fases/facil/sistema-solar/terra.png",
-    "Marte": "../../../../assets/img/fases/facil/sistema-solar/marte.png",
-    "Júpiter": "../../../../assets/img/fases/facil/sistema-solar/jupiter.png",
-    "Saturno": "../../../../assets/img/fases/facil/sistema-solar/saturno.png",
-    "Urano": "../../../../assets/img/fases/facil/sistema-solar/urano.png",
-    "Netuno": "../../../../assets/img/fases/facil/sistema-solar/netuno.png"
+    "Mercúrio": "../../../../assets/img/fases/medio/sistema-solar/mercurio.png",
+    "Vênus": "../../../../assets/img/fases/medio/sistema-solar/venus.png",
+    "Terra": "../../../../assets/img/fases/medio/sistema-solar/terra.png",
+    "Marte": "../../../../assets/img/fases/medio/sistema-solar/marte.png",
+    "Júpiter": "../../../../assets/img/fases/medio/sistema-solar/jupiter.png",
+    "Saturno": "../../../../assets/img/fases/medio/sistema-solar/saturno.png",
+    "Urano": "../../../../assets/img/fases/medio/sistema-solar/urano.png",
+    "Netuno": "../../../../assets/img/fases/medio/sistema-solar/netuno.png"
   };
-  imagemMeteoro: string = "../../../../assets/img/fases/facil/sistema-solar/meteoro.png";
+  imagemMeteoro: string = "../../../../assets/img/fases/medio/sistema-solar/meteoro.png";
   indicePlanetaAtual: number = 0;
   
   trilhaSonora: HTMLAudioElement | null = null;
@@ -51,7 +51,8 @@ export class SistemaSolarComponent implements AfterViewInit {
     private elementRef: ElementRef,
     @Inject(PLATFORM_ID) private platformId: Object,
     private route: ActivatedRoute,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private router: Router
   ) { }
 
   ngAfterViewInit(): void {
@@ -85,14 +86,18 @@ export class SistemaSolarComponent implements AfterViewInit {
     }
   }
 
+  ngOnDestroy(): void {
+    this.apiService.closeConnection();
+  }
+
   chamarService(tipo: string): void {
     const apiUrl: string = tipo === 'luva' ?
       'http://localhost:3000/conectado/luva' :
       tipo === 'olho' ?
       'http://localhost:3000/conectado/olho' :
-      (() => { console.error('Tipo inválido:', tipo); return ''; })(); // tratamento para tipo inválido
+      (() => { console.error('Tipo inválido:', tipo); return ''; })(); 
   
-    if (!apiUrl) return; // Retorna se apiUrl for vazio (tipo inválido)
+    if (!apiUrl) return;
   
     this.apiService.getBlinkData(apiUrl).subscribe({
       next: (data: string) => {
@@ -111,8 +116,6 @@ export class SistemaSolarComponent implements AfterViewInit {
       }
     });
   }
-
-
 
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
@@ -247,7 +250,7 @@ export class SistemaSolarComponent implements AfterViewInit {
       this.coracoes[this.vidas].style.display = 'none';
     }
     if (this.vidas === 0) {
-      this.showPopup('lose', 'Você falhou na sua missão, tente novamente.');
+      // this.showPopup('lose', 'Você falhou na sua missão, tente novamente.');
     }
   }
 
@@ -277,7 +280,7 @@ export class SistemaSolarComponent implements AfterViewInit {
   }
 
   goToHome(): void {
-    window.location.href = '/home';
+    this.router.navigate(['',])
   }
 
   resetGame(): void {

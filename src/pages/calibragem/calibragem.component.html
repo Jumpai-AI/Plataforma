@@ -1,0 +1,8 @@
+<div class="progress-wrapper">
+    <h2 class="progress-title">Progresso da Calibração</h2>
+    <div class="progress-container">
+      <div class="progress-bar" [ngStyle]="{ width: progresso * 100 + '%' }"></div>
+    </div>
+    <p class="progress-text">Progresso: {{ (progresso * 100) | number: '1.0-2' }}%</p>
+  </div>
+  

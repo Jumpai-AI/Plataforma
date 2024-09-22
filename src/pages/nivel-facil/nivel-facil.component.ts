@@ -1,16 +1,17 @@
-import { Component, ElementRef, AfterViewInit, OnDestroy, HostListener, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { Component, ElementRef, Inject, PLATFORM_ID } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as bootstrap from 'bootstrap';
 import { ApiService } from '../../service/blink-events';
-import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-nivel-medio',
-  templateUrl: './nivel-medio.component.html',
-  styleUrls: ['./nivel-medio.component.scss']
+  selector: 'app-nivel-facil',
+  standalone: true,
+  imports: [],
+  templateUrl: './nivel-facil.component.html',
+  styleUrl: './nivel-facil.component.scss'
 })
-export class NivelMedioComponent implements AfterViewInit, OnDestroy {
-
+export class NivelFacilComponent {
   private carouselInstance?: bootstrap.Carousel;
   private intervalId?: any;
   private buttons: HTMLElement[] = [];
@@ -26,7 +27,6 @@ export class NivelMedioComponent implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
-      this.buttons = Array.from(this.elementRef.nativeElement.querySelectorAll('.carousel-item .action-button')) as HTMLElement[];
       this.initializeCarousel();
       this.startAutoSlide();
     }
@@ -54,12 +54,13 @@ export class NivelMedioComponent implements AfterViewInit, OnDestroy {
     }, 3000); 
   }
 
-  sistemaSolar(): void {
+  numeros(): void {
     const tipo = this.route.snapshot.paramMap.get('tipo');
     if (tipo) {
-      this.router.navigate(['/sistema-solar', tipo]);
+      this.router.navigate(['/numeros', tipo]);
     } else {
       console.error('Tipo não encontrado na rota');
     }
   }
+
 }

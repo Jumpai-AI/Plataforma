@@ -14,10 +14,16 @@ export class InicioComponent {
 
   controle(): void {
     this.router.navigate(['/niveis', 'luva']);
+    // this.router.navigate(['/calibragem']);
   }
   
   ocular(): void {
     this.router.navigate(['/niveis', 'olho']);
   }
+
+  teclado(): void {
+    this.router.navigate(['/niveis', 'teclado']);
+  }
+  
   
 }

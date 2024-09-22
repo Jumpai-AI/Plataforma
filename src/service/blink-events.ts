@@ -1,29 +1,45 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
+  private eventSource: EventSource | null = null;
+  private dataSubject: Subject<any> = new Subject<any>();
 
   constructor() { }
 
   getBlinkData(api: string): Observable<any> {
-    return new Observable(observer => {
-      const eventSource = new EventSource(api);
+    if (!this.eventSource || this.eventSource.url !== api) {
+      this.createEventSource(api);
+    }
 
-      eventSource.onmessage = (event) => {
-        observer.next(event.data);
-      };
+    return this.dataSubject.asObservable();
+  }
 
-      eventSource.onerror = (error) => {
-        observer.error(error);
-        eventSource.close();
-      };
+  private createEventSource(api: string): void {
+    if (this.eventSource) {
+      this.eventSource.close();
+    }
 
-      return () => {
-        eventSource.close();
-      };
-    });
+    this.eventSource = new EventSource(api);
+
+    this.eventSource.onmessage = (event) => {
+      this.dataSubject.next(event.data);
+    };
+
+    this.eventSource.onerror = (error) => {
+      this.dataSubject.error(error);
+      this.eventSource?.close();
+    };
+  }
+
+  // Novo método para fechar a conexão
+  closeConnection(): void {
+    if (this.eventSource) {
+      this.eventSource.close();
+      this.eventSource = null;
+    }
   }
 }

@@ -1,0 +1,23 @@
+<div class="quiz-background"></div>
+<div class="quiz-container p-4 rounded">
+    <div class="question mb-4 text-center">
+      <h1>{{ currentQuestion.question }}</h1>
+    </div>
+    <div class="answers d-flex flex-wrap">
+      <button *ngFor="let answer of currentQuestion.answers"
+              [attr.id]="getButtonId(answer)"
+              [ngClass]="{
+                'btn-success': selectedAnswer === answer && answer === correctAnswer,
+                'btn-danger': selectedAnswer === answer && answer !== correctAnswer,
+                'btn-primary': selectedAnswer !== answer
+              }"
+              class="btn answer-button"
+              (click)="checkAnswer(answer)">
+        {{ answer }}
+      </button>
+    </div>
+    <div class="score mt-4 text-center">
+      <h2>Score: {{ score }}</h2>
+    </div>
+  </div>
+  

@@ -1,49 +1,73 @@
 .area-botao {
-    background-image: url('../../assets/img/background/background.png'); 
-    background-size: cover;
-    background-position: center;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+  background-image: url('../../assets/img/background/background.png');
+  background-size: cover;
+  background-position: center;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  button {
-    width: 500px;
-    height: 500px;
-    margin: 10px; 
-    background-color: #FEFEFE; 
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); 
-    border-radius: 20px;
-    border: 10px solid;
-    cursor: pointer;
-  }
+button {
+  width: 500px;
+  height: 500px;
+  margin: 10px;
+  background-color: #FEFEFE;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  border: 10px solid;
+  cursor: pointer;
+}
 
-  .facil{
-    color:#2AD352;
-    border-color: #2AD352;
-  }
+.facil {
+  color: #2AD352;
+  border-color: #2AD352;
+}
 
-  .medio{
-    color:#FFC14A;
-    border-color: #FFC14A;
-  }
-  
-  .dificil{
-    color:#FF0000;
-    border-color: #FF0000;
-  } 
-  
-  .desafio{
-    color:#940BFF;
-    border-color: #940BFF;
-  }
+.medio {
+  color: #FFC14A;
+  border-color: #FFC14A;
+}
 
-  button:hover{
-    background-color: #efeded;
-  }
+.dificil {
+  color: #FF0000;
+  border-color: #FF0000;
+}
 
-  p{
-    font-size: 50px;
-    font-weight: bold
-  }
+.desafio {
+  color: #940BFF;
+  border-color: #940BFF;
+}
+
+.area-botao p {
+  font-size: 50px;
+  font-weight: bold;
+}
+
+.facil:hover {
+  background-color: #2AD352 !important;
+  color: #FEFEFE;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  border-color: transparent;
+}
+
+.medio:hover {
+  background-color: #FFC14A !important;
+  color: #FEFEFE;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  border-color: transparent;
+}
+
+.dificil:hover {
+  background-color: #FF0000 !important;
+  color: #FEFEFE;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  border-color: transparent;
+}
+
+.desafio:hover {
+  background-color: #940BFF !important;
+  color: #FEFEFE;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  border-color: transparent;
+}

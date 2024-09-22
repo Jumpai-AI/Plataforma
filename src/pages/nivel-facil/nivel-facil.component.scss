@@ -1,0 +1,38 @@
+img{
+    height: 100vh;
+}
+
+.carousel-caption {
+    top: 40%;
+}
+
+h5{
+    text-transform:uppercase;
+    font-size: 50px;
+}
+
+p{
+    font-size: 25px;
+    font-weight: 400;
+}
+
+.btn-iniciar{
+    border-radius: 20px;
+    background-color: white;
+    box-shadow: none;
+    height: 40px;
+}
+
+.cores p, .cores h5{
+color:black
+}
+
+.cores .btn-iniciar{
+    border-radius: 20px;
+    background-color: #2AD352;
+    border-color: transparent;
+    height: 40px;
+    color:white;
+}
+
+
