@@ -1,0 +1,29 @@
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<!-- Cabeçalho -->
+<header class="header">
+    <div class="logo">
+      <img src="assets/img/header/logo.png" alt="Logo do JumpAI">
+    </div>
+</header>
+
+<!-- Conteúdo -->
+<main class="content">
+    <section class="calibration-instruction">
+      <h1>Faça movimentos repetidos até que a luva seja 100% calibrada</h1>
+    </section>
+    
+    <!-- Barra de Carregamento -->
+    <div class="loading-bar">
+        <div class="progress" [style.width.%]="loadingProgress"></div>
+    </div>
+    
+    <!-- Exibição da Porcentagem -->
+    <div class="percentage">
+        <span>{{ loadingProgress }}%</span>
+        <span style="margin-left: auto;">100%</span>
+    </div>
+</main>
+</body>

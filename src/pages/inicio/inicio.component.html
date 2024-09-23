@@ -1,10 +1,66 @@
-<div class="w-100 area-botao">
-    <button (click)="ocular()">
-        <img src="../../assets/img/controles/olho.png" alt="">
-        <p>Jogar usando o <br>movimento ocular</p>
-    </button>
-    <button (click)="controle()">
-        <img src="../../assets/img/controles/controle.png" alt="">
-        <p>Jogar usando o  <br> controle dos dedos</p>
-    </button>
-</div>
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<!-- Cabeçalho -->
+<header class="header">
+    <div class="logo">
+      <img src="assets/img/header/logo.png" alt="Logo do JumpAI">
+    </div>
+    <div class="icons">
+      <a href="path/to/support-page">
+        <img src="assets/img/header/ajuda.png" alt="Suporte">
+      </a>
+      <a href="https://bento.me/jumpai" target="_blank">
+        <img src="assets/img/header/contato.png" alt="Contato">
+      </a>
+      <a href="https://github.com/Jumpai-AI/HomePage" target="_blank">
+        <img src="assets/img/header/home.png" alt="Home">
+      </a>
+    </div>
+</header>
+
+<!-- Conteúdo -->
+<main class="content">
+    <section class="intro-text">
+      <h1>AGORA, O PODER DO JOGO ESTÁ AO ALCANCE DO SEU OLHAR</h1>
+      <p>
+        Um jogo divertido e educativo, criado para pessoas com mobilidade reduzida,
+        jogado com os olhos ou mínimos movimentos das mãos.
+      </p>
+    </section>
+  
+    <section class="control-options">
+      <div class="card" (click)="ocular()">
+        <img src="assets/img/controles/olho.png" alt="Controle Ocular">
+        <p>Jogar usando o controle ocular</p>
+      </div>
+      <div class="card" (click)="controle()">
+        <img src="assets/img/controles/controle.png" alt="Controle dos Dedos">
+        <p>Jogar usando o controle dos dedos</p>
+      </div>
+      <div class="card">
+        <img src="assets/img/controles/teclado.png" alt="Controle por Teclado">
+        <p>Jogar usando o teclado</p>
+      </div>
+    </section>
+
+    <div class="form-background">
+        <div class="shape shape-square"></div>
+        <div class="shape shape-small-square"></div>
+        <div class="shape shape-medium-square"></div>
+        <div class="shape shape-large-square"></div>
+        <div class="shape shape-circle"></div>
+        <div class="shape shape-small-circle"></div>
+        <div class="shape shape-small2-circle"></div>
+        <div class="shape shape-medium-circle"></div>
+        <div class="shape shape-large-circle"></div>
+        <div class="shape shape-triangle"></div>
+        <div class="shape shape-small-triangle"></div>
+        <div class="shape shape-medium-triangle"></div>
+        <div class="shape shape-large-triangle"></div>
+    </div>
+</main>
+</body>
+
+    

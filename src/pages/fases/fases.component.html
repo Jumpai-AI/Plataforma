@@ -1,0 +1,51 @@
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Cabeçalho -->
+  <header class="header">
+      <div class="logo">
+        <img src="assets/img/header/logo.png" alt="Logo do JumpAI">
+      </div>
+      <h1>Escolha a fase que você quer jogar</h1>
+    </header>
+    
+    <!-- Conteúdo -->
+    <main class="content">
+      <section class="phase-selection">
+        <div class="card" >
+          <img src="assets/img/fases/planetas.png" alt="Fase 1">
+          <h2>Busca Espacial</h2>
+          <p>Nesta fase, você viajará pelo sistema solar em busca dos planetas do sistema solar. Cuidado com os obstáculos pelo caminho!</p>
+          <button (click)="dificuldade()">INICIAR</button>
+        </div>
+        <div class="card" >
+          <img src="assets/img/fases/cores.png" alt="Fase 2">
+          <h2>Festa das Cores </h2>
+          <p>A sua missão é encontrar as cores primarias e segundarias, mas cuidado ao selecionar uma cor que não pertence a elas você perderá vidas. Boa sorte!</p>
+          <button (click)="dificuldade()">INICIAR</button>
+        </div>
+        <div class="card" >
+          <img src="assets/img/fases/numeros.png" alt="Fase 3">
+          <h2>Fase dos Números</h2>
+          <p>Nesta fase, você viajará pelo sistema solar em busca dos planetas do sistema solar. Cuidado com os obstáculos pelo caminho!</p>
+          <button (click)="dificuldade()">INICIAR</button>
+        </div>
+      </section>
+      <div class="form-background">
+        <div class="shape shape-square"></div>
+        <div class="shape shape-small-square"></div>
+        <div class="shape shape-medium-square"></div>
+        <div class="shape shape-large-square"></div>
+        <div class="shape shape-circle"></div>
+        <div class="shape shape-small-circle"></div>
+        <div class="shape shape-small2-circle"></div>
+        <div class="shape shape-medium-circle"></div>
+        <div class="shape shape-large-circle"></div>
+        <div class="shape shape-triangle"></div>
+        <div class="shape shape-small-triangle"></div>
+        <div class="shape shape-medium-triangle"></div>
+        <div class="shape shape-large-triangle"></div>
+      </div>
+    </main>
+</body>

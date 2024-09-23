@@ -1,0 +1,305 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #552CB7; 
+    color: white;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px;
+  }
+  
+  .logo img {
+    max-width: 200px;
+    margin-right: 20px;
+    padding-top: 20px;
+  }
+  
+  h1 {
+    font-size: 2em;
+    text-align: left;
+    margin-bottom: 50px;
+  }
+  
+  .content {
+    margin-top: 50px;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .difficulty-selection {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  .card {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border-radius: 20px;
+    padding: 20px;
+    padding-top: 45px;
+    width: 200px;
+    z-index: 2;
+    height: 200px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+  
+  /* Nível Fácil */
+  .easy {
+    border: 6px solid #2AD352;
+    color: #2AD352;
+  }
+  
+  /* Nível Médio */
+  .medium {
+    border: 6px solid #FFC14A;
+    color: #FFC14A;
+  }
+  
+  /* Nível Difícil */
+  .hard {
+    border: 6px solid #fd5a46;
+    color: #fd5a46;
+  }
+  
+  /* Desafio */
+  .challenge {
+    border: 6px solid #058CD7;
+    color: #058CD7;
+  }
+  
+  .card:hover {
+    transform: scale(1.1);
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  .card img {
+    width: 40%;
+    margin-bottom: 20px;
+  }
+  
+  .card h2 {
+    font-size: 1.5em;
+  }
+  
+  // Formas 
+.shape {
+    position: absolute;
+  
+  }
+  
+  
+  .form-background {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 25vh; 
+  }
+  
+  .shape-square, .shape-small-square, .shape-medium-square, .shape-large-square,
+  .shape-circle, .shape-small-circle, .shape-medium-circle, .shape-large-circle,
+  .shape-triangle, .shape-small-triangle, .shape-medium-triangle, .shape-large-triangle {
+    margin: 10px; 
+    opacity: 0.8;
+  }
+  
+  //Quadrados
+  .shape-square {
+    background-color: #058CD7; 
+    width: 60px;
+    height: 60px;
+    bottom: 0%; 
+    left: 5%;
+  }
+  
+  .shape-small-square {
+    background-color: #FB7DA8; 
+    width: 40px;
+    height: 40px;
+    bottom: 0%;
+    left: 25%;
+  }
+  
+  .shape-medium-square {
+    background-color: #058CD7; 
+    width: 50px;
+    height: 50px;
+    bottom: 80%;
+    left: 60%;
+  }
+  
+  .shape-large-square {
+    background-color: #058CD7; 
+    width: 80px;
+    height: 80px;
+    bottom: 5%;
+    left: 80%;
+  }
+  
+  //Circulos
+  .shape-circle {
+    background-color: #FFE662; 
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    bottom: 15%;
+    left: 13%;
+  }
+  
+  .shape-small-circle {
+    background-color: #00995E; 
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    bottom: 10%;
+    left: 45%;
+  }
+  
+  .shape-small2-circle {
+    background-color: #00995E; 
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    bottom: 8%;
+    left: 95%;
+  }
+  
+  .shape-medium-circle {
+    background-color: #FFE662; 
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    bottom: 50%;
+    left: 92%;
+  }
+  
+  .shape-large-circle {
+    background-color: #FFE662; 
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    bottom: 70%;
+    left: 25%;
+  }
+  
+  //Triangulos
+  .shape-triangle {
+    width: 0;
+    height: 0;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    border-bottom: 60px solid #FD5A46; 
+    bottom: 5%;
+    left: 35%;
+  }
+  
+  .shape-small-triangle {
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 40px solid #FD5A46; 
+    bottom: 0%;
+    left: 70%;
+  }
+  
+  .shape-medium-triangle {
+    width: 0;
+    height: 0;
+    border-left: 40px solid transparent;
+    border-right: 40px solid transparent;
+    border-bottom: 80px solid #FFE662; 
+    bottom: 15%;
+    left: 55%;
+  }
+  
+  .shape-large-triangle {
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-bottom: 100px solid #FB7DA8; 
+    bottom: 60%;
+    left: 0%;
+  }
+  
+  @keyframes aparecer-sumir {
+    0%, 100% {
+      opacity: 0; 
+    }
+    50% {
+      opacity: 1; 
+    }
+  }
+  
+  /* Animação */
+  .shape {
+    position: absolute;
+    animation: aparecer-sumir 12s infinite; 
+  }
+  
+  
+  .shape-square {
+    animation-delay: 0s;
+  }
+  
+  .shape-small-square {
+    animation-delay: 1s; 
+  }
+  
+  .shape-medium-square {
+    animation-delay: 2s; 
+  }
+  
+  .shape-large-square {
+    animation-delay: 3s; 
+  }
+  
+  .shape-circle {
+    animation-delay: 4s; 
+  }
+  
+  .shape-small-circle {
+    animation-delay: 5s; 
+  }
+  
+  .shape-small2-circle {
+    animation-delay: 6s; 
+  }
+  
+  .shape-medium-circle {
+    animation-delay: 7s;
+  }
+  
+  .shape-large-circle {
+    animation-delay: 8s; 
+  }
+  
+  .shape-triangle {
+    animation-delay: 9s; 
+  }
+  
+  .shape-small-triangle {
+    animation-delay: 10s; 
+  }
+  
+  .shape-medium-triangle {
+    animation-delay: 11s; 
+  }
+  
+  .shape-large-triangle {
+    animation-delay: 12s; 
+  }
+  

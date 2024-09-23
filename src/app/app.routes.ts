@@ -1,12 +1,17 @@
 import { Routes } from '@angular/router';
-import { NiveisComponent } from '../pages/niveis/niveis.component';
 import { InicioComponent } from '../pages/inicio/inicio.component';
-import { NivelMedioComponent } from '../pages/nivel-medio/nivel-medio.component';
-import { SistemaSolarComponent } from '../pages/nivel-medio/fases/sistema-solar/sistema-solar.component';
+import { SistemaSolarComponent } from '../pages/nivel-medio/sistema-solar/sistema-solar.component';
+import { CalibragemOlhoComponent } from '../pages/calibragem-olho/calibragem-olho.component';
+import { CalibragemLuvaComponent } from '../pages/calibragem-luva/calibragem-luva.component';
+import { FasesComponent } from '../pages/fases/fases.component';
+import { DificuldadeComponent } from '../pages/dificuldade/dificuldade.component';
+
 
 export const routes: Routes = [
     { path: '', component: InicioComponent },
-    { path: 'niveis/:tipo', component: NiveisComponent },
-    { path: 'nivelMedio/:tipo', component: NivelMedioComponent },
-    { path: 'sistema-solar/:tipo', component: SistemaSolarComponent }
+    { path: 'medio/sistema-solar/:tipo', component: SistemaSolarComponent },
+    { path: 'calibragem-olho', component: CalibragemOlhoComponent },
+    { path: 'calibragem-luva', component: CalibragemLuvaComponent },
+    { path: 'fases/:tipo', component: FasesComponent },
+    { path: 'dificuldade/:tipo', component: DificuldadeComponent }
 ];

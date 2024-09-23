@@ -1,7 +1,8 @@
 import { Component, ElementRef, Inject, PLATFORM_ID, AfterViewInit, Renderer2, HostListener } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute} from '@angular/router';
-import { ApiService } from '../../../../service/blink-events';
+import { ApiService } from '../../../service/blink-events';
+
 
 @Component({
   selector: 'app-sistema-solar',  
