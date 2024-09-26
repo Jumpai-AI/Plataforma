@@ -147,24 +147,43 @@ export class SistemaSolarComponent implements AfterViewInit {
     }
   }
 
+  private ultimoPlaneta: string | null = null;
+
   criarPlaneta(): void {
-    if (this.indicePlanetaAtual === this.ordemPlanetas.length) {
-      return;
-    }
+      const planetasRestantes = this.ordemPlanetas.slice(this.indicePlanetaAtual);
+      if (planetasRestantes.length === 0) {
+          return;
+      }
 
-    let nomePlaneta;
-    do {
-      nomePlaneta = this.ordemPlanetas[Math.floor(Math.random() * this.ordemPlanetas.length)];
-    } while (this.indicePlanetaAtual > 0 && nomePlaneta === this.ordemPlanetas[this.indicePlanetaAtual - 1]);
+      const planetasParaEscolher = planetasRestantes.slice(0, 3);
+      let nomePlaneta: string;
 
-    let planeta = this.renderer.createElement('div');
-    this.renderer.addClass(planeta, 'planeta');
-    this.renderer.setStyle(planeta, 'backgroundImage', `url(${this.imagensPlanetas[nomePlaneta]})`);
-    this.renderer.setAttribute(planeta, 'data-name', nomePlaneta);
-    this.renderer.setStyle(planeta, 'bottom', `${500 + Math.random() * 150}px`);
-    this.renderer.appendChild(this.gameContainer!, planeta);
-    this.moverPlaneta(planeta);
+      // Se houver apenas um planeta restante, permite repetir
+      if (planetasRestantes.length === 1) {
+          nomePlaneta = planetasRestantes[0];
+      } else {
+          // Filtra os planetas para não escolher o último
+          const planetasFiltrados = planetasParaEscolher.filter(nome => nome !== this.ultimoPlaneta);
+          
+          // Se todos os planetas foram filtrados, escolhe um aleatoriamente entre os restantes
+          if (planetasFiltrados.length === 0) {
+              nomePlaneta = planetasParaEscolher[Math.floor(Math.random() * planetasParaEscolher.length)];
+          } else {
+              nomePlaneta = planetasFiltrados[Math.floor(Math.random() * planetasFiltrados.length)];
+          }
+      }
+
+      this.ultimoPlaneta = nomePlaneta; // Atualiza o último planeta escolhido
+
+      let planeta = this.renderer.createElement('div');
+      this.renderer.addClass(planeta, 'planeta');
+      this.renderer.setStyle(planeta, 'backgroundImage', `url(${this.imagensPlanetas[nomePlaneta]})`);
+      this.renderer.setAttribute(planeta, 'data-name', nomePlaneta);
+      this.renderer.setStyle(planeta, 'bottom', `${500 + Math.random() * 150}px`);
+      this.renderer.appendChild(this.gameContainer!, planeta);
+      this.moverPlaneta(planeta);
   }
+
 
   moverPlaneta(planeta: HTMLElement): void {
     let intervaloPlaneta = setInterval(() => {
