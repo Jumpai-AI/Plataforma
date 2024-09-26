@@ -72,17 +72,19 @@ export class SistemaSolarComponent implements AfterViewInit {
 
       this.chamarService(this.route.snapshot.paramMap.get('tipo') ?? '');
 
+      if(this.route.snapshot.paramMap.get('tipo') == 'teclado'){
+        this.iniciarGeracaoPlanetas();
+      }
+
       this.botaoPopupVitoria?.addEventListener('click', () => this.hidePopup());
       this.botaoTentarNovamente?.addEventListener('click', () => this.hidePopup());
       this.botaoSair?.addEventListener('click', () => this.goToHome());
 
-      this.trilhaSonora = new Audio('assets/audio/fases/trilha-sonora-fs1.mp3');
-      this.somVitoria = new Audio('assets/audio/conquista/vitoria.mp3');
-      this.trilhaSonora.loop = true;
-      this.trilhaSonora?.play();
+      // this.trilhaSonora = new Audio('assets/audio/fases/trilha-sonora-fs1.mp3');
+      // this.somVitoria = new Audio('assets/audio/conquista/vitoria.mp3');
+      // this.trilhaSonora.loop = true;
+      // this.trilhaSonora?.play();
 
-      setInterval(() => this.criarPlaneta(), 2000);
-      setInterval(() => this.criarMeteoro(), 5000);
     }
   }
 
@@ -90,12 +92,14 @@ export class SistemaSolarComponent implements AfterViewInit {
     this.apiService.closeConnection();
   }
 
+  primeiraPiscadaDetectada: boolean = false;
+
   chamarService(tipo: string): void {
-    const apiUrl: string = tipo === 'luva' ?
-      'http://localhost:3000/conectado/luva' :
-      tipo === 'olho' ?
-      'http://localhost:3000/conectado/olho' :
-      (() => { console.error('Tipo inválido:', tipo); return ''; })(); 
+    const apiUrl: string = tipo === 'luva' ? 
+      'http://localhost:3000/conectado/luva' : 
+      tipo === 'olho' ? 
+      'http://localhost:3000/conectado/olho' : 
+      (() => { console.error('Tipo inválido:', tipo); return ''; })();
   
     if (!apiUrl) return;
   
@@ -105,6 +109,11 @@ export class SistemaSolarComponent implements AfterViewInit {
           this.blinkData.push(data);
           this.subir();
           this.acao = true;
+  
+          if (!this.primeiraPiscadaDetectada) {
+            this.primeiraPiscadaDetectada = true;
+            this.iniciarGeracaoPlanetas();
+          }
         } else {
           this.blinkData.push(data);
           this.descer();
@@ -116,7 +125,12 @@ export class SistemaSolarComponent implements AfterViewInit {
       }
     });
   }
-
+  
+  iniciarGeracaoPlanetas(): void {
+    setInterval(() => this.criarPlaneta(), 2000);
+    setInterval(() => this.criarMeteoro(), 5000);
+  }
+  
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'ArrowUp') {
@@ -179,7 +193,7 @@ export class SistemaSolarComponent implements AfterViewInit {
       this.renderer.addClass(planeta, 'planeta');
       this.renderer.setStyle(planeta, 'backgroundImage', `url(${this.imagensPlanetas[nomePlaneta]})`);
       this.renderer.setAttribute(planeta, 'data-name', nomePlaneta);
-      this.renderer.setStyle(planeta, 'bottom', `${500 + Math.random() * 150}px`);
+      this.renderer.setStyle(planeta, 'bottom', `${500 + Math.random() * 80}px`);
       this.renderer.appendChild(this.gameContainer!, planeta);
       this.moverPlaneta(planeta);
   }
