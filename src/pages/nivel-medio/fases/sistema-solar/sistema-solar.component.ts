@@ -1,16 +1,26 @@
-import { Component, ElementRef, Inject, PLATFORM_ID, AfterViewInit, Renderer2, HostListener } from '@angular/core';
+import { Component, ElementRef, Inject, PLATFORM_ID, AfterViewInit, Renderer2, HostListener, ViewChild } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { ActivatedRoute, Router} from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../../service/blink-events';
+import { Camera } from '@mediapipe/camera_utils';
+import { FaceMesh } from '@mediapipe/face_mesh';
+import { BlinkDetectionService } from '../../../../service/BlinkDetectionService';
 
 @Component({
-  selector: 'app-sistema-solar',  
+  selector: 'app-sistema-solar',
   standalone: true,
   imports: [],
   templateUrl: './sistema-solar.component.html',
   styleUrl: './sistema-solar.component.scss'
 })
 export class SistemaSolarComponent implements AfterViewInit {
+  @ViewChild('videoElement') videoElement!: ElementRef;
+  @ViewChild('canvasElement') canvasElement!: ElementRef;
+
+  private faceMesh!: FaceMesh;
+  private camera!: Camera;
+
+  // Other properties...
   personagem: HTMLElement | null = null;
   gameContainer: HTMLElement | null = null;
   coracoes: HTMLElement[] = [];
@@ -37,7 +47,7 @@ export class SistemaSolarComponent implements AfterViewInit {
   };
   imagemMeteoro: string = "../../../../assets/img/fases/medio/sistema-solar/meteoro.png";
   indicePlanetaAtual: number = 0;
-  
+
   trilhaSonora: HTMLAudioElement | null = null;
   somVitoria: HTMLAudioElement | null = null;
   somDerrota: HTMLAudioElement | null = null;
@@ -45,17 +55,49 @@ export class SistemaSolarComponent implements AfterViewInit {
   blinkData: string[] = [];
   acao: boolean = false;
 
+  primeiraPiscadaDetectada: boolean = false;
 
   constructor(
+    private blinkDetectionService: BlinkDetectionService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
     @Inject(PLATFORM_ID) private platformId: Object,
     private route: ActivatedRoute,
     private apiService: ApiService,
     private router: Router
-  ) { }
+  ) {}
+
+  ngOnInit(): void {}
 
   ngAfterViewInit(): void {
+    this.initializeFaceMesh();
+  }
+
+  private initializeFaceMesh(): void {
+    this.faceMesh = new FaceMesh({
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}`
+    });
+  
+    this.faceMesh.setOptions({
+      maxNumFaces: 1,
+      refineLandmarks: true,
+      minDetectionConfidence: 0.5,
+      minTrackingConfidence: 0.5
+    });
+  
+    this.faceMesh.onResults(this.onResults.bind(this));
+  
+    this.camera = new Camera(this.videoElement.nativeElement, {
+      onFrame: async () => {
+        await this.faceMesh.send({ image: this.videoElement.nativeElement });
+      },
+      width: 640,
+      height: 480
+    });
+  
+    this.camera.start();
+    
+    // Check element references
     if (isPlatformBrowser(this.platformId)) {
       this.personagem = this.elementRef.nativeElement.querySelector('#personagem');
       this.gameContainer = this.elementRef.nativeElement.querySelector('#game-container');
@@ -69,68 +111,81 @@ export class SistemaSolarComponent implements AfterViewInit {
       this.botaoPopupVitoria = this.elementRef.nativeElement.querySelector('#botao-popup-vitoria');
       this.botaoTentarNovamente = this.elementRef.nativeElement.querySelector('#botao-tentar-novamente');
       this.botaoSair = this.elementRef.nativeElement.querySelector('#botao-sair');
-
-      this.chamarService(this.route.snapshot.paramMap.get('tipo') ?? '');
-
-      if(this.route.snapshot.paramMap.get('tipo') == 'teclado'){
+  
+      if (this.route.snapshot.paramMap.get('tipo') == 'teclado') {
         this.iniciarGeracaoPlanetas();
       }
-
+  
       this.botaoPopupVitoria?.addEventListener('click', () => this.hidePopup());
       this.botaoTentarNovamente?.addEventListener('click', () => this.hidePopup());
       this.botaoSair?.addEventListener('click', () => this.goToHome());
-
-      // this.trilhaSonora = new Audio('assets/audio/fases/trilha-sonora-fs1.mp3');
-      // this.somVitoria = new Audio('assets/audio/conquista/vitoria.mp3');
-      // this.trilhaSonora.loop = true;
-      // this.trilhaSonora?.play();
-
     }
   }
-
-  ngOnDestroy(): void {
-    this.apiService.closeConnection();
-  }
-
-  primeiraPiscadaDetectada: boolean = false;
-
-  chamarService(tipo: string): void {
-    const apiUrl: string = tipo === 'luva' ? 
-      'http://localhost:3000/conectado/luva' : 
-      tipo === 'olho' ? 
-      'http://localhost:3000/conectado/olho' : 
-      (() => { console.error('Tipo inválido:', tipo); return ''; })();
   
-    if (!apiUrl) return;
+  private onResults(results: any): void {
+    if (!this.canvasElement || !this.canvasElement.nativeElement) {
+      console.error("Canvas element is not initialized.");
+      return;
+    }
   
-    this.apiService.getBlinkData(apiUrl).subscribe({
-      next: (data: string) => {
-        if (!this.acao) {
-          this.blinkData.push(data);
-          this.subir();
-          this.acao = true;
+    const canvasCtx = this.canvasElement.nativeElement.getContext('2d');
+    canvasCtx.save();
+    canvasCtx.clearRect(0, 0, this.canvasElement.nativeElement.width, this.canvasElement.nativeElement.height);
   
-          if (!this.primeiraPiscadaDetectada) {
-            this.primeiraPiscadaDetectada = true;
-            this.iniciarGeracaoPlanetas();
+    // Draw the video image on the canvas
+    canvasCtx.drawImage(
+      results.image,
+      0,
+      0,
+      this.canvasElement.nativeElement.width,
+      this.canvasElement.nativeElement.height
+    );
+  
+    if (results.multiFaceLandmarks) {
+      for (const landmarks of results.multiFaceLandmarks) {
+        const leftEyeTop = landmarks[159];
+        const leftEyeBottom = landmarks[145];
+  
+        const leftEyeTopY = leftEyeTop.y * this.canvasElement.nativeElement.height;
+        const leftEyeBottomY = leftEyeBottom.y * this.canvasElement.nativeElement.height;
+        const currentEyeHeight = leftEyeBottomY - leftEyeTopY;
+  
+        this.blinkDetectionService.registerEyeHeight(currentEyeHeight);
+        const blinkDetected = this.blinkDetectionService.detectBlink(currentEyeHeight);
+        if (blinkDetected) {
+          if (!this.acao) {
+            this.subir();
+            this.acao = true;
+  
+            if (!this.primeiraPiscadaDetectada) {
+              this.primeiraPiscadaDetectada = true;
+              this.iniciarGeracaoPlanetas();
+            }
+          } else {
+            this.descer();
+            this.acao = false;
           }
-        } else {
-          this.blinkData.push(data);
-          this.descer();
-          this.acao = false;
         }
-      },
-      error: (error: any) => {
-        console.error('Erro ao consumir a API:', error);
+  
+        // Draw a line on the left eye
+        canvasCtx.beginPath();
+        canvasCtx.moveTo(leftEyeTop.x * this.canvasElement.nativeElement.width, leftEyeTopY);
+        canvasCtx.lineTo(leftEyeBottom.x * this.canvasElement.nativeElement.width, leftEyeBottomY);
+        canvasCtx.strokeStyle = 'red';
+        canvasCtx.lineWidth = 2;
+        canvasCtx.stroke();
       }
-    });
+    }
+  
+    canvasCtx.restore();
   }
   
+
   iniciarGeracaoPlanetas(): void {
     setInterval(() => this.criarPlaneta(), 2000);
     setInterval(() => this.criarMeteoro(), 5000);
   }
-  
+
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
     if (event.key === 'ArrowUp') {
@@ -164,40 +219,33 @@ export class SistemaSolarComponent implements AfterViewInit {
   private ultimoPlaneta: string | null = null;
 
   criarPlaneta(): void {
-      const planetasRestantes = this.ordemPlanetas.slice(this.indicePlanetaAtual);
-      if (planetasRestantes.length === 0) {
-          return;
-      }
+    const planetasRestantes = this.ordemPlanetas.slice(this.indicePlanetaAtual);
+    if (planetasRestantes.length === 0) {
+      return;
+    }
 
-      const planetasParaEscolher = planetasRestantes.slice(0, 3);
-      let nomePlaneta: string;
+    const planetasParaEscolher = planetasRestantes.slice(0, 3);
+    let nomePlaneta: string;
 
-      // Se houver apenas um planeta restante, permite repetir
-      if (planetasRestantes.length === 1) {
-          nomePlaneta = planetasRestantes[0];
-      } else {
-          // Filtra os planetas para não escolher o último
-          const planetasFiltrados = planetasParaEscolher.filter(nome => nome !== this.ultimoPlaneta);
-          
-          // Se todos os planetas foram filtrados, escolhe um aleatoriamente entre os restantes
-          if (planetasFiltrados.length === 0) {
-              nomePlaneta = planetasParaEscolher[Math.floor(Math.random() * planetasParaEscolher.length)];
-          } else {
-              nomePlaneta = planetasFiltrados[Math.floor(Math.random() * planetasFiltrados.length)];
-          }
-      }
+    if (planetasRestantes.length === 1) {
+      nomePlaneta = planetasRestantes[0];
+    } else {
+      const planetasFiltrados = planetasParaEscolher.filter(nome => nome !== this.ultimoPlaneta);
+      nomePlaneta = planetasFiltrados.length === 0 
+        ? planetasParaEscolher[Math.floor(Math.random() * planetasParaEscolher.length)] 
+        : planetasFiltrados[Math.floor(Math.random() * planetasFiltrados.length)];
+    }
 
-      this.ultimoPlaneta = nomePlaneta; // Atualiza o último planeta escolhido
+    this.ultimoPlaneta = nomePlaneta;
 
-      let planeta = this.renderer.createElement('div');
-      this.renderer.addClass(planeta, 'planeta');
-      this.renderer.setStyle(planeta, 'backgroundImage', `url(${this.imagensPlanetas[nomePlaneta]})`);
-      this.renderer.setAttribute(planeta, 'data-name', nomePlaneta);
-      this.renderer.setStyle(planeta, 'bottom', `${500 + Math.random() * 80}px`);
-      this.renderer.appendChild(this.gameContainer!, planeta);
-      this.moverPlaneta(planeta);
+    let planeta = this.renderer.createElement('div');
+    this.renderer.addClass(planeta, 'planeta');
+    this.renderer.setStyle(planeta, 'backgroundImage', `url(${this.imagensPlanetas[nomePlaneta]})`);
+    this.renderer.setAttribute(planeta, 'data-name', nomePlaneta);
+    this.renderer.setStyle(planeta, 'bottom', `${500 + Math.random() * 80}px`);
+    this.renderer.appendChild(this.gameContainer!, planeta);
+    this.moverPlaneta(planeta);
   }
-
 
   moverPlaneta(planeta: HTMLElement): void {
     let intervaloPlaneta = setInterval(() => {
@@ -226,7 +274,6 @@ export class SistemaSolarComponent implements AfterViewInit {
         if (nomePlaneta === this.ordemPlanetas[this.indicePlanetaAtual]) {
           this.planetasColetados!.innerHTML += `<div><img src="${this.imagensPlanetas[nomePlaneta]}" alt="${nomePlaneta}" width="100%" height="100%"></div>`;
           this.indicePlanetaAtual++;
-
           this.regenerarVida();
 
           if (this.indicePlanetaAtual === this.ordemPlanetas.length) {
@@ -283,7 +330,7 @@ export class SistemaSolarComponent implements AfterViewInit {
       this.coracoes[this.vidas].style.display = 'none';
     }
     if (this.vidas === 0) {
-      // this.showPopup('lose', 'Você falhou na sua missão, tente novamente.');
+      // Handle game over scenario
     }
   }
 
@@ -313,7 +360,7 @@ export class SistemaSolarComponent implements AfterViewInit {
   }
 
   goToHome(): void {
-    this.router.navigate(['',])
+    this.router.navigate(['',]);
   }
 
   resetGame(): void {
