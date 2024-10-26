@@ -1,3 +1,12 @@
+#game-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: url('../../../../assets/img/fases/medio/sistema-solar/fundo-fase-1.jpg') no-repeat center center;
+  background-size: cover;
+}
+
 #personagem {
   position: absolute;
   bottom: 50px;
@@ -118,35 +127,4 @@
   width: 35%;
   margin: 10px;
   font-size: 13px;
-}
-
-.container {
-  position: relative;
-  width: 640px;
-  height: 480px;
-}
-
-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-#game-container {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  background: url('../../../../assets/img/fases/medio/sistema-solar/fundo-fase-1.jpg') no-repeat center center;
-  background-size: cover;
-}
-
-video {
-  position: absolute;
-  bottom: 400px; /* Adjust based on where you want it */
-  left: 20px; /* Adjust the left position */
-  width: 400px; /* Keep it small */
-  height: auto; /* Maintain aspect ratio */
-  border-radius: 10px; /* Optional: add some styling */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3); /* Optional: add shadow for depth */
 }
