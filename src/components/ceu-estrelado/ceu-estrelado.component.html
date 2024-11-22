@@ -1,0 +1,13 @@
+<div class="form-background">
+  <div
+    class="shape shape-circle"
+    *ngFor="let estrela of estrelas"
+    [ngStyle]="{
+      top: estrela.top + '%',
+      left: estrela.left + '%',
+      animationDelay: estrela.delay + 's',
+      width: estrela.size + 'px',
+      height: estrela.size + 'px'
+    }"
+  ></div>
+</div>

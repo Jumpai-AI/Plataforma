@@ -2,15 +2,36 @@ import { Component, ElementRef, Inject, PLATFORM_ID, AfterViewInit, Renderer2, H
 import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router} from '@angular/router';
 import { ApiService } from '../../../../service/blink-events';
+import { CeuEstreladoComponent } from '../../../../components/ceu-estrelado/ceu-estrelado.component';
+
+
 
 @Component({
   selector: 'app-sistema-solar',  
   standalone: true,
-  imports: [],
+  imports: [CeuEstreladoComponent],
   templateUrl: './sistema-solar.component.html',
   styleUrl: './sistema-solar.component.scss'
 })
 export class SistemaSolarComponent implements AfterViewInit {
+  
+    private intervaloPlanetas: any = null;
+    private intervaloMeteoros: any = null;
+    private intervaloSelecao: any = null;
+    private botoesPopup: HTMLElement[] = [];
+  
+    constructor(
+      private renderer: Renderer2,
+      private elementRef: ElementRef,
+      @Inject(PLATFORM_ID) private platformId: Object,
+      private route: ActivatedRoute,
+      private apiService: ApiService,
+      private router: Router
+    ) { }
+  
+
+
+
   personagem: HTMLElement | null = null;
   gameContainer: HTMLElement | null = null;
   coracoes: HTMLElement[] = [];
@@ -23,6 +44,7 @@ export class SistemaSolarComponent implements AfterViewInit {
   botaoPopupVitoria: HTMLElement | null = null;
   botaoTentarNovamente: HTMLElement | null = null;
   botaoSair: HTMLElement | null = null;
+  
 
   ordemPlanetas: string[] = ["Mercúrio", "Vênus", "Terra", "Marte", "Júpiter", "Saturno", "Urano", "Netuno"];
   imagensPlanetas: { [key: string]: string } = {
@@ -38,22 +60,13 @@ export class SistemaSolarComponent implements AfterViewInit {
   imagemMeteoro: string = "../../../../assets/img/fases/medio/sistema-solar/meteoro.png";
   indicePlanetaAtual: number = 0;
   
-  trilhaSonora: HTMLAudioElement | null = null;
+  //trilhaSonora: HTMLAudioElement | null = null;
   somVitoria: HTMLAudioElement | null = null;
   somDerrota: HTMLAudioElement | null = null;
 
   blinkData: string[] = [];
   acao: boolean = false;
 
-
-  constructor(
-    private renderer: Renderer2,
-    private elementRef: ElementRef,
-    @Inject(PLATFORM_ID) private platformId: Object,
-    private route: ActivatedRoute,
-    private apiService: ApiService,
-    private router: Router
-  ) { }
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
@@ -76,10 +89,15 @@ export class SistemaSolarComponent implements AfterViewInit {
       this.botaoTentarNovamente?.addEventListener('click', () => this.hidePopup());
       this.botaoSair?.addEventListener('click', () => this.goToHome());
 
-      this.trilhaSonora = new Audio('assets/audio/fases/trilha-sonora-fs1.mp3');
+      //this.trilhaSonora = new Audio('assets/audio/fases/trilha-sonora-fs1.mp3');
       this.somVitoria = new Audio('assets/audio/conquista/vitoria.mp3');
-      this.trilhaSonora.loop = true;
-      this.trilhaSonora?.play();
+      //this.trilhaSonora.loop = true;
+      //this.trilhaSonora?.play();
+      
+      //para de gerar os meteoros
+      this.intervaloMeteoros = setInterval(() => this.criarMeteoro(), 5000);
+
+      
 
       setInterval(() => this.criarPlaneta(), 2000);
       setInterval(() => this.criarMeteoro(), 5000);
@@ -179,7 +197,7 @@ export class SistemaSolarComponent implements AfterViewInit {
       this.renderer.addClass(planeta, 'planeta');
       this.renderer.setStyle(planeta, 'backgroundImage', `url(${this.imagensPlanetas[nomePlaneta]})`);
       this.renderer.setAttribute(planeta, 'data-name', nomePlaneta);
-      this.renderer.setStyle(planeta, 'bottom', `${500 + Math.random() * 150}px`);
+      this.renderer.setStyle(planeta, 'bottom', `${40 + Math.random()*20}%`);
       this.renderer.appendChild(this.gameContainer!, planeta);
       this.moverPlaneta(planeta);
   }
@@ -191,7 +209,7 @@ export class SistemaSolarComponent implements AfterViewInit {
       let personagemBottom = parseInt(getComputedStyle(this.personagem!).bottom);
       let personagemLeft = parseInt(getComputedStyle(this.personagem!).left);
       let personagemRight = personagemLeft + this.personagem!.offsetWidth;
-      let planetaLeft = window.innerWidth - planetaRight - 50;
+      let planetaLeft = window.innerWidth - planetaRight;
       let planetaTop = parseInt(getComputedStyle(planeta).bottom);
       let planetaBottom = planetaTop + planeta.offsetHeight;
 
@@ -199,12 +217,12 @@ export class SistemaSolarComponent implements AfterViewInit {
         planeta.remove();
         clearInterval(intervaloPlaneta);
       } else {
-        planeta.style.right = planetaRight + 5 + 'px';
+        planeta.style.right = planetaRight + 8 + 'px'; //velocidade
       }
 
       if (
-        planetaLeft < personagemLeft &&
-        planetaLeft + planeta.offsetWidth > personagemLeft &&
+        planetaLeft < personagemRight && personagemLeft &&
+        planetaLeft + planeta.offsetWidth > personagemRight &&
         personagemBottom < planetaBottom &&
         personagemBottom + this.personagem!.offsetHeight > planetaTop
       ) {
@@ -213,10 +231,10 @@ export class SistemaSolarComponent implements AfterViewInit {
           this.planetasColetados!.innerHTML += `<div><img src="${this.imagensPlanetas[nomePlaneta]}" alt="${nomePlaneta}" width="100%" height="100%"></div>`;
           this.indicePlanetaAtual++;
 
-          this.regenerarVida();
+          //this.regenerarVida();
 
           if (this.indicePlanetaAtual === this.ordemPlanetas.length) {
-            this.showPopup('win', 'Parabéns!! Você concluiu sua missão');
+            this.showPopup('win', 'PARABÉNS!');
           }
         } else {
           this.perderVida();
@@ -231,7 +249,7 @@ export class SistemaSolarComponent implements AfterViewInit {
     let meteoro = this.renderer.createElement('div');
     this.renderer.addClass(meteoro, 'meteoro');
     this.renderer.setStyle(meteoro, 'backgroundImage', `url(${this.imagemMeteoro})`);
-    this.renderer.setStyle(meteoro, 'bottom', '60px');
+    this.renderer.setStyle(meteoro, 'bottom', '6%');
     this.renderer.setStyle(meteoro, 'right', '-90px');
     this.renderer.appendChild(this.gameContainer!, meteoro);
     this.moverMeteoro(meteoro);
@@ -242,13 +260,13 @@ export class SistemaSolarComponent implements AfterViewInit {
       let meteoroRight = parseInt(getComputedStyle(meteoro).right);
       let personagemBottom = parseInt(getComputedStyle(this.personagem!).bottom);
       let personagemLeft = parseInt(getComputedStyle(this.personagem!).left);
-      let meteoroLeft = window.innerWidth - meteoroRight - 50;
+      let meteoroLeft = window.innerWidth - meteoroRight;
 
       if (meteoroRight >= window.innerWidth) {
         meteoro.remove();
         clearInterval(intervaloMeteoro);
       } else {
-        meteoro.style.right = meteoroRight + 5 + 'px';
+        meteoro.style.right = meteoroRight + 8 + 'px'; //velocidade do meteoro
       }
 
       if (
@@ -269,18 +287,42 @@ export class SistemaSolarComponent implements AfterViewInit {
       this.coracoes[this.vidas].style.display = 'none';
     }
     if (this.vidas === 0) {
-      // this.showPopup('lose', 'Você falhou na sua missão, tente novamente.');
+      this.showPopup('lose', 'GAME OVER');
     }
   }
 
-  regenerarVida(): void {
+  /* regenerarVida(): void {
     if (this.vidas < 3) {
       this.coracoes[this.vidas].style.display = 'inline-block';
       this.vidas++;
     }
-  }
+  } */
 
   showPopup(status: 'win' | 'lose', message: string): void {
+    // Pausar geração de planetas e meteoros
+    if (this.intervaloPlanetas) {
+      clearInterval(this.intervaloPlanetas);
+      this.intervaloPlanetas = null;
+    }
+    if (this.intervaloMeteoros) {
+      clearInterval(this.intervaloMeteoros);
+      this.intervaloMeteoros = null;
+    }
+  
+    // Ocultar elementos do jogo
+    if (this.personagem) this.renderer.setStyle(this.personagem, 'visibility', 'hidden');
+    if (this.planetasColetados) this.renderer.setStyle(this.planetasColetados, 'visibility', 'hidden');
+    if (this.gameContainer) {
+      const planetas = this.gameContainer.querySelectorAll('.planeta');
+      const meteoros = this.gameContainer.querySelectorAll('.meteoro');
+  
+      planetas.forEach(planeta => this.renderer.setStyle(planeta, 'visibility', 'hidden'));
+      meteoros.forEach(meteoro => this.renderer.setStyle(meteoro, 'visibility', 'hidden'));
+    }
+    this.coracoes.forEach(coracao => this.renderer.setStyle(coracao, 'visibility', 'hidden'));
+  
+  
+    // Mostrar popup
     if (status === 'win') {
       this.textoPopupVitoria!.textContent = message;
       this.popupVitoria!.style.display = 'block';
@@ -289,14 +331,33 @@ export class SistemaSolarComponent implements AfterViewInit {
       this.textoPopupDerrota!.textContent = message;
       this.popupDerrota!.style.display = 'block';
     }
-    this.trilhaSonora?.pause();
   }
 
   hidePopup(): void {
+    // Restaurar visibilidade dos elementos do jogo
+    if (this.personagem) this.renderer.setStyle(this.personagem, 'visibility', 'visible');
+    if (this.planetasColetados) this.renderer.setStyle(this.planetasColetados, 'visibility', 'visible');
+    if (this.gameContainer) {
+      const planetas = this.gameContainer.querySelectorAll('.planeta');
+      const meteoros = this.gameContainer.querySelectorAll('.meteoro');
+  
+      planetas.forEach(planeta => this.renderer.setStyle(planeta, 'visibility', 'visible'));
+      meteoros.forEach(meteoro => this.renderer.setStyle(meteoro, 'visibility', 'visible'));
+    }
+    this.coracoes.forEach(coracao => this.renderer.setStyle(coracao, 'visibility', 'visible'));
+  
+  
+    // Reiniciar geração de planetas e meteoros
+    this.intervaloPlanetas = setInterval(() => this.criarPlaneta(), 2000);
+    this.intervaloMeteoros = setInterval(() => this.criarMeteoro(), 5000);
+  
+    // Esconder popups
     this.popupVitoria!.style.display = 'none';
     this.popupDerrota!.style.display = 'none';
+  
     this.resetGame();
   }
+  
 
   goToHome(): void {
     this.router.navigate(['',])
@@ -307,6 +368,6 @@ export class SistemaSolarComponent implements AfterViewInit {
     this.coracoes.forEach(coracao => coracao.style.display = 'inline-block');
     this.indicePlanetaAtual = 0;
     this.planetasColetados!.innerHTML = '';
-    this.trilhaSonora?.play();
+    //this.trilhaSonora?.play();
   }
 }

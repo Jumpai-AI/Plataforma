@@ -1,26 +1,38 @@
 <div id="game-container">
+  
   <div id="personagem"></div>
-  <div id="vida">
-    <img src="../../../../assets/img/fases/medio/sistema-solar/coracao.png" class="coracao" id="co1">
-    <img src="../../../../assets/img/fases/medio/sistema-solar/coracao.png" class="coracao" id="co2">
-    <img src="../../../../assets/img/fases/medio/sistema-solar/coracao.png" class="coracao" id="co3">
-    <img src="../../../../assets/img/fases/medio/sistema-solar/coracao.png" class="coracao" id="co4">
-    <img src="../../../../assets/img/fases/medio/sistema-solar/coracao.png" class="coracao" id="co5">
+
+  <div class="dois">
+    <div id="planetas-coletados"></div>
+    <div id="vida">
+      <img src="../../../../assets/img/fases/medio/sistema-solar/coracao.png" class="coracao" id="co1">
+      <img src="../../../../assets/img/fases/medio/sistema-solar/coracao.png" class="coracao" id="co2">
+      <img src="../../../../assets/img/fases/medio/sistema-solar/coracao.png" class="coracao" id="co3">
+      <img src="../../../../assets/img/fases/medio/sistema-solar/coracao.png" class="coracao" id="co4">
+      <img src="../../../../assets/img/fases/medio/sistema-solar/coracao.png" class="coracao" id="co5">
+    </div>
   </div>
-  <div id="planetas-coletados"></div>
+
   <div id="popup-vitoria" class="popup hidden">
     <div class="popup-content">
-      <span id="texto-popup-vitoria"></span>
-      <button id="botao-popup-vitoria">AVANÇAR</button>
+      <span id="texto-popup-vitoria display"></span>
+      <p>Você concluiu sua missão! Deseja avançar para o próximo nível ou voltar ao menu inicial?</p>
+      <img id="img-vitoria" src="../../../../assets/img/fases/medio/sistema-solar/vitoria-img.png" alt="">
+      <div class="botoes-popup-derrota"></div>
+        <button id="botao-popup-vitoria">AVANÇAR</button>
+        <button id="botao-sair">SAIR</button>
+      </div>
     </div>
   </div>
   <div id="popup-derrota" class="popup hidden">
     <div class="popup-content">
       <span id="texto-popup-derrota"></span>
+      <p>Infelizmente não foi dessa vez... Continue praticando!</p>
+      <img id="img-derrota" src="../../../../assets/img/fases/medio/sistema-solar/derrota.png" alt="">
       <div class="botoes-popup-derrota">
         <button id="botao-tentar-novamente">TENTAR NOVAMENTE</button>
         <button id="botao-sair">SAIR</button>
       </div>
     </div>
   </div>
-</div>
+<app-ceu-estrelado></app-ceu-estrelado>

@@ -1,0 +1,42 @@
+.form-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1; /* Definido para ficar atrás de outros elementos interativos */
+  pointer-events: none; /* As estrelas não interferem nos cliques */
+  background: transparent; /* Nenhuma cor para sobrepor a imagem de fundo */
+}
+
+.shape {
+  position: absolute;
+  animation: brilho 10s infinite ease-in-out;
+}
+
+.shape-circle {
+  position: absolute;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 1) 0%,    /* Centro brilhante */
+    rgba(255, 255, 255, 0.6) 40%, /* Transição suave */
+    rgba(255, 255, 255, 0) 100%   /* Dissolve no fundo */
+  );
+  border-radius: 50%;
+  animation: brilho 5s infinite ease-in-out;
+  opacity: 0; /* Inicialmente invisível */
+}
+
+/* Animação de brilho */
+@keyframes brilho {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.6), 0 0 10px rgba(255, 255, 255, 0.4);
+    transform: scale(1);
+    opacity: 0;
+  }
+  50% {
+    box-shadow: 0 0 15px rgba(255, 255, 255, 1), 0 0 30px rgba(255, 255, 255, 0.8);
+    transform: scale(1.5);
+    opacity: 1;
+  }
+}
